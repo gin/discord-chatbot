@@ -58,6 +58,38 @@ bot.on('message', msg => {
 				}
 			})();
 		}
+	} else if (msg.content.startsWith('!ops') || msg.content.startsWith('!Ops')) {
+		const os = require('os');
+
+		// Log user input.
+		console.log(new Date, msg.content);
+		const cmd = msg.content.split(' ');
+		let arg = '';
+		if (cmd.length > 1) {
+			arg = msg.content.split(' ')[1].toLowerCase();
+		}
+		let s = '';
+		switch(arg) {
+			case 'cpu':
+				let cpuLoad = os.loadavg();
+				function toPercent(n) { return (parseFloat(n)*100).toFixed(0); }
+				[cpuLoad[0], cpuLoad[1], cpuLoad[2]] = [toPercent(cpuLoad[0]), toPercent(cpuLoad[1]), toPercent(cpuLoad[2])];
+				s = `CPU (average load):\n1 min:\t${cpuLoad[0]}%\n5 min:\t${cpuLoad[1]}%\n15 min:\t${cpuLoad[2]}%`;
+				msg.channel.send(s);
+				break;
+			case 'mem':
+				const memFree = os.freemem();
+				const memTotal = os.totalmem();
+				const memPercent = (memFree/memTotal*100).toFixed(2);
+
+				s = `Memory (free):\n${memPercent}% (${(memFree/1024/1024).toFixed(0)}MB)`;
+				msg.channel.send(s);
+				break;
+			default:
+				break;
+		}
+		// Log output.
+		console.log(new Date, s);
 	}
 });
 
