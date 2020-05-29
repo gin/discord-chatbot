@@ -16,7 +16,7 @@ bot.on('message', msg => {
 	} else if (msg.content.startsWith('fx') || msg.content.startsWith('Fx')) {
 		// Log user input.
 		console.log(new Date, msg.content);
-		const ticker = msg.content.split(' ')[1].toLowerCase();
+		const ticker = msg.content.split(/ +/)[1].toLowerCase();
 		let url;
 		let isUnknownTicker = false;
 		switch(ticker) {
@@ -63,10 +63,10 @@ bot.on('message', msg => {
 
 		// Log user input.
 		console.log(new Date, msg.content);
-		const cmd = msg.content.split(' ');
+		const cmd = msg.content.split();
 		let arg = '';
 		if (cmd.length > 1) {
-			arg = msg.content.split(' ')[1].toLowerCase();
+			arg = msg.content.split(/ +/)[1].toLowerCase();
 		}
 		let s = '';
 		switch(arg) {
