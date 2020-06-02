@@ -11,6 +11,7 @@ bot.on('ready', () => {
 
 bot.on('message', msg => {
 	if (msg.content === 'ping') {
+		//bot.commands.get('ping').execute(msg, 'ops');
 		msg.reply('pong');		// Replies with "@speaker, msg"
 		msg.channel.send('pong');	// Replies with "msg"
 	} else if (msg.content.startsWith('fx') || msg.content.startsWith('Fx')) {
@@ -41,7 +42,7 @@ bot.on('message', msg => {
 				const p = getPrice(d);
 				const vwap = getVwap(d);
 
-				if ((ticker === 'btc') && (p > vwap)) {
+				if ((ticker === 'btc') && (parseFloat(p) >= parseFloat(vwap))) {
 					// BTC rollercoaster up gif
 					const gif = 'https://media.giphy.com/media/7FBY7h5Psqd20/giphy.gif'
 
@@ -115,14 +116,17 @@ async function getData(url) {
 	return j;
 }
 
+// Returns string
 function getPrice(j) {
 	return parseFloat(j.data.priceUsd).toFixed(2);
 }
 
+// Returns string
 function getVwap(j) {
 	return parseFloat(j.data.vwap24Hr).toFixed(2);
 }
 
+// Returns string
 function getMarketCap(j) {
 	return parseFloat(j.data.marketCapUsd).toFixed(2);
 }
