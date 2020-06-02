@@ -42,8 +42,14 @@ bot.on('message', msg => {
 				const p = getPrice(d);
 				const vwap = getVwap(d);
 
-				if ((ticker === 'btc') && (parseFloat(p) >= parseFloat(vwap))) {
+				if ((ticker === 'btc') && (p >= vwap)) {
 					// BTC rollercoaster up gif
+					console.log(p)
+					console.log(vwap)
+					console.log(p>vwap)
+					console.log(p<vwap)
+					console.log(p==vwap)
+					console.log(p===vwap)
 					const gif = 'https://media.giphy.com/media/7FBY7h5Psqd20/giphy.gif'
 
 					msg.channel.send(`**${ticker.toUpperCase()}:\n$${p}**`);
@@ -116,17 +122,14 @@ async function getData(url) {
 	return j;
 }
 
-// Returns string
 function getPrice(j) {
-	return parseFloat(j.data.priceUsd).toFixed(2);
+	return parseFloat(parseFloat(j.data.priceUsd).toFixed(2));
 }
 
-// Returns string
 function getVwap(j) {
-	return parseFloat(j.data.vwap24Hr).toFixed(2);
+	return parseFloat(parseFloat(j.data.vwap24Hr).toFixed(2));
 }
 
-// Returns string
 function getMarketCap(j) {
-	return parseFloat(j.data.marketCapUsd).toFixed(2);
+	return parseFloat(parseFloat(j.data.marketCapUsd).toFixed(2));
 }
