@@ -19,10 +19,12 @@ bot.on('message', msg => {
 		console.log(new Date, msg.content);
 		const ticker = msg.content.split(/ +/)[1].toLowerCase();
 		let url;
+		let chart;
 		let isUnknownTicker = false;
 		switch(ticker) {
 			case 'btc':
 				url = 'http://api.coincap.io/v2/assets/bitcoin';
+				chart = 'https://bitcoincharts.com/charts/chart.png?width=480&m=krakenUSD&SubmitButton=Draw&r=10&i=Hourly&c=0&s=&e=&Prev=&Next=&t=S&b=D&a1=SMA&m1=50&a2=SMA&m2=200&x=0&i1=RSI&i2=WilliamR&i3=&i4=&v=1&cv=1&ps=1&l=0&p=0&';
 				break;
 			case 'eth':
 				url = 'http://api.coincap.io/v2/assets/ethereum';
@@ -44,22 +46,18 @@ bot.on('message', msg => {
 
 				if ((ticker === 'btc') && (p >= vwap)) {
 					// BTC rollercoaster up gif
-					console.log(p)
-					console.log(vwap)
-					console.log(p>vwap)
-					console.log(p<vwap)
-					console.log(p==vwap)
-					console.log(p===vwap)
 					const gif = 'https://media.giphy.com/media/7FBY7h5Psqd20/giphy.gif'
 
 					msg.channel.send(`**${ticker.toUpperCase()}:\n$${p}**`);
 					msg.channel.send(new MessageAttachment(gif));
+					msg.channel.send(new MessageAttachment(chart));
 				} else if (ticker === 'btc') {
 					// BTC rollercoaster down gif
 					const gif = 'https://media.giphy.com/media/RgxAkfVQWwkjS/giphy.gif';
 
 					msg.channel.send(`**${ticker.toUpperCase()}:\n$${p}**`);
 					msg.channel.send(new MessageAttachment(gif));
+					msg.channel.send(new MessageAttachment(chart));
 				} else {
 					msg.channel.send(`**${ticker.toUpperCase()}:\n$${p}**`);
 				}
