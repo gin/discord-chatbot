@@ -22,6 +22,13 @@ bot.on('message', msg => {
 		let chart;
 		let isUnknownTicker = false;
 		switch(ticker) {
+			case 'help':
+				msg.channel.send(`Tickers available are:
+				btc
+				eth
+				atom
+				`);
+				break;
 			case 'btc':
 				url = 'http://api.coincap.io/v2/assets/bitcoin';
 				chart = 'https://bitcoincharts.com/charts/chart.png?width=480&m=krakenUSD&SubmitButton=Draw&r=10&i=Hourly&c=0&s=&e=&Prev=&Next=&t=S&b=D&a1=SMA&m1=50&a2=SMA&m2=200&x=0&i1=RSI&i2=WilliamR&i3=&i4=&v=1&cv=1&ps=1&l=0&p=0&';
@@ -75,6 +82,13 @@ bot.on('message', msg => {
 		}
 		let s = '';
 		switch(arg) {
+			case 'help':
+				msg.channel.send(`
+				cpu
+				mem
+				hdd
+				`);
+				break;
 			case 'cpu':
 				let cpuLoad = os.loadavg();
 				function toPercent(n) { return (parseFloat(n)*100).toFixed(0); }
