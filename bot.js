@@ -1,9 +1,16 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const fetch = require('node-fetch');
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Collection, MessageAttachment } = require('discord.js');
 const bot = new Client();
+bot.commands = new Collection();
+const botCommands = require('./commands');
 
-const botSecretToken = process.env.DISCORD_BOT_TOKEN;
-bot.login(botSecretToken);
+Object.keys(botCommands).map(key => {
+	bot.commands.set(botCommands[key].name, botCommands[key]);
+});
+
+bot.login(process.env.DISCORD_BOT_TOKEN);
 
 bot.on('ready', () => {
 	console.log("Connected as", bot.user.tag);
@@ -18,58 +25,7 @@ bot.on('message', msg => {
 		// Log user input.
 		console.log(new Date, msg.content);
 		const ticker = msg.content.split(/ +/)[1].toLowerCase();
-		let url;
-		let chart;
-		let isUnknownTicker = false;
-		switch(ticker) {
-			case 'help':
-				msg.channel.send(`Tickers available are:
-				btc
-				eth
-				atom
-				`);
-				break;
-			case 'btc':
-				url = 'http://api.coincap.io/v2/assets/bitcoin';
-				chart = 'https://bitcoincharts.com/charts/chart.png?width=480&m=krakenUSD&SubmitButton=Draw&r=10&i=Hourly&c=0&s=&e=&Prev=&Next=&t=S&b=D&a1=SMA&m1=50&a2=SMA&m2=200&x=0&i1=RSI&i2=WilliamR&i3=&i4=&v=1&cv=1&ps=1&l=0&p=0&';
-				break;
-			case 'eth':
-				url = 'http://api.coincap.io/v2/assets/ethereum';
-				break;
-			case 'atom':
-				url = 'http://api.coincap.io/v2/assets/cosmos';
-				break;
-			default:
-				isUnknownTicker = true;
-				msg.reply(`I do not know what "${ticker}" is.`);
-				break;
-		}
-		if (!isUnknownTicker) {
-			// Async function IIFE is not needed if running with Deno
-			(async function () {
-				const d = await getData(url);
-				const p = getPrice(d);
-				const vwap = getVwap(d);
-
-				if ((ticker === 'btc') && (p >= vwap)) {
-					// BTC rollercoaster up gif
-					const gif = 'https://media.giphy.com/media/7FBY7h5Psqd20/giphy.gif'
-
-					msg.channel.send(`**${ticker.toUpperCase()}:\n$${p}**`);
-					msg.channel.send(new MessageAttachment(gif));
-					msg.channel.send(new MessageAttachment(chart));
-				} else if (ticker === 'btc') {
-					// BTC rollercoaster down gif
-					const gif = 'https://media.giphy.com/media/RgxAkfVQWwkjS/giphy.gif';
-
-					msg.channel.send(`**${ticker.toUpperCase()}:\n$${p}**`);
-					msg.channel.send(new MessageAttachment(gif));
-					msg.channel.send(new MessageAttachment(chart));
-				} else {
-					msg.channel.send(`**${ticker.toUpperCase()}:\n$${p}**`);
-				}
-			})();
-		}
+		bot.commands.get('fx').execute(msg, ticker);
 	} else if (msg.content.startsWith('!ops') || msg.content.startsWith('!Ops')) {
 		const os = require('os');
 
@@ -125,23 +81,3 @@ bot.on('message', msg => {
 		}
 	}
 });
-
-async function getData(url) {
-	const r = await fetch(url);
-	const j = await r.json();
-	// Log when response returns.
-	console.log(new Date, j);
-	return j;
-}
-
-function getPrice(j) {
-	return parseFloat(parseFloat(j.data.priceUsd).toFixed(2));
-}
-
-function getVwap(j) {
-	return parseFloat(parseFloat(j.data.vwap24Hr).toFixed(2));
-}
-
-function getMarketCap(j) {
-	return parseFloat(parseFloat(j.data.marketCapUsd).toFixed(2));
-}
