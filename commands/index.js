@@ -1,4 +1,4 @@
 module.exports = {
-	p: require('./p'),
 	fx: require('./fx'),
+	ops: require('./ops'),
 };
