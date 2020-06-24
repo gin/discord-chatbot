@@ -8,9 +8,9 @@ module.exports = {
 
 
 const fetch = require('node-fetch');
-const { Client, Collection, MessageAttachment } = require('discord.js');
+const { MessageAttachment } = require('discord.js');
+
 function e(msg, ticker) {
-	msg.reply('fx refactor');
 	let url;
 	let chart;
 	let isUnknownTicker = false;

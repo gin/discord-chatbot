@@ -17,18 +17,26 @@ bot.on('ready', () => {
 });
 
 bot.on('message', msg => {
+	const cmd = msg.content.split(/ +/);
+	let arg;
+	if (cmd.length > 1) {
+		arg = cmd[1].toLowerCase();
+	} else {
+		return;
+	}
+
 	if (msg.content === 'ping') {
-		msg.reply('pong');		// Replies with "@speaker, msg"
-		msg.channel.send('pong');	// Replies with "msg"
+		//msg.reply('pong');		// Replies with "@speaker, msg"
+		//msg.channel.send('pong');	// Replies with "msg"
 	} else if (msg.content.startsWith('fx') || msg.content.startsWith('Fx')) {
 		// Log user input.
 		console.log(new Date, msg.content);
-		const ticker = msg.content.split(/ +/)[1].toLowerCase();
-		bot.commands.get('fx').execute(msg, ticker);
+
+		bot.commands.get('fx').execute(msg, arg);
 	} else if (msg.content.startsWith('!ops') || msg.content.startsWith('!Ops')) {
 		// Log user input.
 		console.log(new Date, msg.content);
-		const arg = msg.content.split(/ +/)[1].toLowerCase();
+
 		bot.commands.get('ops').execute(msg, arg);
 	}
 });
